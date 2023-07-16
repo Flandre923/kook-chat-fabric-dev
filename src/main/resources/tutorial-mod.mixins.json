@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "net.flandre923.tutorialmod.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"ExampleMixin",
+		"MixinPlayerManager",
+		"MixinServerPlayNetworkHandler"
+	],
+	"server": [
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
