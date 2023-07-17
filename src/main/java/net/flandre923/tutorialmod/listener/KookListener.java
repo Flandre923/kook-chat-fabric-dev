@@ -27,7 +27,7 @@ public class KookListener implements Listener {
     @EventHandler
     public void onKookMessage(ChannelMessageEvent event) {
 
-        if (!CONFIG.generic.to_Minecraft) {
+        if (!CONFIG.to_Minecraft) {
             return;
         }
 
@@ -35,7 +35,7 @@ public class KookListener implements Listener {
             return;
         }
 
-        if (event.getChannel().getId().equals(CONFIG.generic.channel_ID)) {
+        if (event.getChannel().getId().equals(CONFIG.channel_ID)) {
 
             BaseComponent component = event.getMessage().getComponent();
 
@@ -47,7 +47,7 @@ public class KookListener implements Listener {
                         .map();
 
                 server.getPlayerManager().getPlayerList().forEach(player -> player.sendMessage(
-                        Text.literal(StrUtil.format(CONFIG.generic.to_Minecraft_Message,map))));
+                        Text.literal(StrUtil.format(CONFIG.to_Minecraft_Message,map))));
             }
         }
 

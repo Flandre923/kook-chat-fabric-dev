@@ -1,11 +1,13 @@
 package net.flandre923.tutorialmod;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenCustomHashMap;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.flandre923.tutorialmod.block.ModBlocks;
 import net.flandre923.tutorialmod.commands.KookCommands;
 import net.flandre923.tutorialmod.config.Config;
+import net.flandre923.tutorialmod.config.ConfigFile;
 import net.flandre923.tutorialmod.item.ModItemGroups;
 import net.flandre923.tutorialmod.item.ModItems;
 import net.flandre923.tutorialmod.listener.KookListener;
@@ -28,8 +30,8 @@ public class TutorialMod implements ModInitializer {
 	private static final File kbcSetting = new File(".", "config/McToKook/kbc.yml");
 	private static final File configFolder = new File(".", "config/McToKook");
 	static KBCClient kbcClient = null;
-	public static Config CONFIG;
-
+	public static Config config = ConfigFile.DEFAULT_CONFIG;
+	public static ConfigFile configFile = new ConfigFile("kook.json");
 	public static KBCClient getKbcClient() {
 		return kbcClient;
 	}
@@ -41,7 +43,21 @@ public class TutorialMod implements ModInitializer {
 		ModItems.registerModItems();
 		ModBlocks.registerModBlocks();
 
+
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			/*
+			 * 读写本模组的配置文件
+			 */
+			if(configFile.exists()){
+				if(readConfig()){
+					LOGGER.warn("Config file read successful");
+				}else{
+					LOGGER.warn("Config file is malformed,Aborting");
+				}
+			}else{
+				LOGGER.warn("Config file doesn't exist,writing default");
+				writeConfig();
+			}
 
 			if (!configFolder.exists()) {
 				configFolder.mkdir();
@@ -54,8 +70,8 @@ public class TutorialMod implements ModInitializer {
 			JKook.setCore(core);
 
 			//读取配置拿必要的东西
-			String bot_token = CONFIG.generic.bot_token;
-			String channel_ID = CONFIG.generic.channel_ID;
+			String bot_token = TutorialMod.config.bot_token;
+			String channel_ID = TutorialMod.config.channel_ID;
 
 			if (bot_token.equals("No token provided")) {
 				LOGGER.info("你没有提供bot-token或者bot-token不正确");
@@ -68,7 +84,7 @@ public class TutorialMod implements ModInitializer {
 					throw new Error("你没有提供channel ID或channel ID不正确,McToKook-Mod将会停用,服务端即将崩溃");
 				}
 			}
-
+			LOGGER.debug("info token :" + TutorialMod.config.bot_token + " -- channel id" + TutorialMod.config.channel_ID);
 			kbcClient = new KBCClient(core, config, null, bot_token);
 
 			kbcClient.start();
@@ -82,6 +98,9 @@ public class TutorialMod implements ModInitializer {
 		});
 	}
 
+	/**
+	 *
+	 */
 	private static void saveKBCConfig() {
 		try (final InputStream stream = TutorialMod.class.getResourceAsStream("/kbc.yml")) {
 			if (stream == null) {
@@ -104,4 +123,29 @@ public class TutorialMod implements ModInitializer {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 *
+	 */
+	public static boolean readConfig(){
+		try {
+			config = configFile.read();
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+
+	/**
+	 *
+	 */
+	public static boolean writeConfig(){
+		try {
+			configFile.write(config);
+			return true;
+		}catch (IOException e){
+			return false;
+		}
+	}
+
+
 }

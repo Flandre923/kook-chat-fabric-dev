@@ -63,6 +63,7 @@ configurations {
 	implementation.extendsFrom shade
 }
 
+
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -72,9 +73,7 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	shade 'com.github.SNWCreations:Kookbc:0.26.13',{
-		exclude group: 'net.fabricmc' ,module: 'sponge-mixin'
-	}
+	shade 'com.github.SNWCreations:Kookbc:bf237bad7c21940a2e8a8c5a95060f9bf49d0099'
 	shade 'cn.hutool:hutool-all:5.8.18'
 	
 	// Uncomment the following line to enable the deprecated Fabric API modules. 
@@ -109,6 +108,9 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_${project.base.archivesName.get()}"}
 	}
+
+	exclude 'META-INF/services/**'
+
 }
 
 // configure the maven publication
