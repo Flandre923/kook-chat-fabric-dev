@@ -1,28 +1,28 @@
 {
 	"schemaVersion": 1,
-	"id": "tutorialmod",
+	"id": "fabrickookchat",
 	"version": "${version}",
-	"name": "Tutorial Mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Fabric Kook Chat",
+	"description": "This is a chat that chats synchronously with the Kook channel",
 	"authors": [
-		"Me!"
+		"flandre923"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://www.github.com/flandre923",
+		"sources": "https://space.bilibili.com/4550069"
 	},
 	"license": "MIT",
 	"icon": "assets/tutorial-mod/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"net.flandre923.tutorialmod.TutorialMod"
+			"net.flandre923.fabrickookchat.TutorialMod"
 		],
 		"client": [
-			"net.flandre923.tutorialmod.TutorialModClient"
+			"net.flandre923.fabrickookchat.TutorialModClient"
 		],
 		"fabric-datagen": [
-			"net.flandre923.tutorialmod.TutorialModDataGenerator"
+			"net.flandre923.fabrickookchat.TutorialModDataGenerator"
 		]
 	},
 	"mixins": [

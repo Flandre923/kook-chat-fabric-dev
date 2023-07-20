@@ -22,7 +22,7 @@ import java.io.InputStream;
 
 // shift + f6 更改这个类的名字
 public class TutorialMod implements ModInitializer {
-	public static final String MOD_ID = "tutorialmod";
+	public static final String MOD_ID = "fabrickookchat";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	private static final File kbcSetting = new File(".", "config/McToKook/kbc.yml");
 	private static final File kbcPluginFolder = new File(".","config/McToKookPlugin");
