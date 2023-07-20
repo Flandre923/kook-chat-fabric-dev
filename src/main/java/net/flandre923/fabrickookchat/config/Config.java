@@ -1,4 +1,4 @@
-package net.flandre923.tutorialmod.config;
+package net.flandre923.fabrickookchat.config;
 
 /**
  * 机器人配置信息

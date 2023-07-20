@@ -1,19 +1,16 @@
-package net.flandre923.tutorialmod;
+package net.flandre923.fabrickookchat;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenCustomHashMap;
+import net.flandre923.fabrickookchat.commands.KookCommands;
+import net.flandre923.fabrickookchat.config.Config;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.flandre923.tutorialmod.block.ModBlocks;
-import net.flandre923.tutorialmod.commands.KookCommands;
-import net.flandre923.tutorialmod.config.Config;
-import net.flandre923.tutorialmod.config.ConfigFile;
-import net.flandre923.tutorialmod.item.ModItemGroups;
-import net.flandre923.tutorialmod.item.ModItems;
-import net.flandre923.tutorialmod.listener.KookListener;
+import net.flandre923.fabrickookchat.config.ConfigFile;
+import net.flandre923.fabrickookchat.listener.KookListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import snw.jkook.JKook;
+import snw.jkook.config.InvalidConfigurationException;
 import snw.jkook.config.file.YamlConfiguration;
 import snw.kookbc.impl.CoreImpl;
 import snw.kookbc.impl.KBCClient;
@@ -28,7 +25,9 @@ public class TutorialMod implements ModInitializer {
 	public static final String MOD_ID = "tutorialmod";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	private static final File kbcSetting = new File(".", "config/McToKook/kbc.yml");
+	private static final File kbcPluginFolder = new File(".","config/McToKookPlugin");
 	private static final File configFolder = new File(".", "config/McToKook");
+
 	static KBCClient kbcClient = null;
 	public static Config config = ConfigFile.DEFAULT_CONFIG;
 	public static ConfigFile configFile = new ConfigFile("kook.json");
@@ -39,11 +38,6 @@ public class TutorialMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ModItemGroups.registerItemGroups();
-		ModItems.registerModItems();
-		ModBlocks.registerModBlocks();
-
-
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			/*
 			 * 读写本模组的配置文件
@@ -62,10 +56,18 @@ public class TutorialMod implements ModInitializer {
 			if (!configFolder.exists()) {
 				configFolder.mkdir();
 			}
+			if(!kbcPluginFolder.exists()){
+				kbcPluginFolder.mkdir();
+			}
+
 			//KookBC保存基础配置文件
 			saveKBCConfig();
 			YamlConfiguration config = new YamlConfiguration();
-
+			try {
+				config.load(kbcSetting);
+			} catch (IOException | InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
 			CoreImpl core = new CoreImpl();
 			JKook.setCore(core);
 
@@ -84,8 +86,8 @@ public class TutorialMod implements ModInitializer {
 					throw new Error("你没有提供channel ID或channel ID不正确,McToKook-Mod将会停用,服务端即将崩溃");
 				}
 			}
-			LOGGER.debug("info token :" + TutorialMod.config.bot_token + " -- channel id" + TutorialMod.config.channel_ID);
-			kbcClient = new KBCClient(core, config, null, bot_token);
+			LOGGER.info("info token :" + TutorialMod.config.bot_token + " -- channel id" + TutorialMod.config.channel_ID);
+			kbcClient = new KBCClient(core, config, new File(".","config/McToKook/"), bot_token);
 
 			kbcClient.start();
 			LOGGER.info("机器人启动！");

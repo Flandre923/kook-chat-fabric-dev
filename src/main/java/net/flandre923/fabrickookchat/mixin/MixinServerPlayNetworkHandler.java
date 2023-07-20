@@ -1,6 +1,8 @@
-package net.flandre923.tutorialmod.mixin;
+package net.flandre923.fabrickookchat.mixin;
 
-import net.flandre923.tutorialmod.TutorialMod;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
+import net.flandre923.fabrickookchat.TutorialMod;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.network.message.*;
@@ -18,12 +20,16 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import snw.jkook.entity.channel.Channel;
+import snw.jkook.entity.channel.TextChannel;
+import snw.kookbc.impl.KBCClient;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public abstract class MixinServerPlayNetworkHandler implements EntityTrackingListener, ServerPlayPacketListener {
@@ -74,6 +80,24 @@ public abstract class MixinServerPlayNetworkHandler implements EntityTrackingLis
 
 
                 TutorialMod.LOGGER.info("playerName" + player.getName() + "  chat content : "+contentToMinecraft);
+
+                if (TutorialMod.config.to_Kook) {
+
+                    CompletableFuture.runAsync(() -> {
+                        KBCClient kbcClient = TutorialMod.getKbcClient();
+                        Channel channel = kbcClient.getCore().getHttpAPI().getChannel(TutorialMod.config.channel_ID);
+                        if (channel instanceof TextChannel) {
+
+                            Map<String, String> map = MapUtil.builder(new HashMap<String, String>())
+                                    .put("playerName", player.getEntityName())
+                                    .put("message", contentToDiscord)
+                                    .map();
+
+                            TextChannel textChannel = (TextChannel) channel;
+                            textChannel.sendComponent(StrUtil.format(TutorialMod.config.to_Kook_Message, map));
+                        }
+                    });
+                }
 
                 try {
                     SignedMessage signedMessage = getSignedMessage(packet, optional.get());

@@ -1,4 +1,4 @@
-package net.flandre923.tutorialmod;
+package net.flandre923.fabrickookchat;
 
 import net.fabricmc.api.ClientModInitializer;
 

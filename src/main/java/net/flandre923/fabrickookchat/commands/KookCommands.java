@@ -1,8 +1,6 @@
-package net.flandre923.tutorialmod.commands;
+package net.flandre923.fabrickookchat.commands;
 
-import net.flandre923.tutorialmod.listener.KookListener;
 import net.minecraft.server.MinecraftServer;
-import org.apache.logging.log4j.core.jmx.Server;
 import snw.jkook.command.JKookCommand;
 import snw.jkook.entity.abilities.Accessory;
 import snw.jkook.message.component.card.CardBuilder;
