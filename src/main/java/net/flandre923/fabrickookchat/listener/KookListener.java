@@ -2,7 +2,8 @@ package net.flandre923.fabrickookchat.listener;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import net.flandre923.fabrickookchat.TutorialMod;
+import net.flandre923.fabrickookchat.KookMod;
+import net.flandre923.fabrickookchat.KookServerMod;
 import net.flandre923.fabrickookchat.config.Config;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
@@ -19,7 +20,7 @@ public class KookListener implements Listener {
 
     public MinecraftServer server;
 
-    private static Config CONFIG = TutorialMod.config;
+    private static Config CONFIG = KookServerMod.config;
     public KookListener(MinecraftServer server){
         this.server = server;
     }

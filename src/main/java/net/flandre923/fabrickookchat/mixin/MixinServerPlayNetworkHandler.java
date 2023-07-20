@@ -2,7 +2,8 @@ package net.flandre923.fabrickookchat.mixin;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import net.flandre923.fabrickookchat.TutorialMod;
+import net.flandre923.fabrickookchat.KookMod;
+import net.flandre923.fabrickookchat.KookServerMod;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.network.message.*;
@@ -79,13 +80,12 @@ public abstract class MixinServerPlayNetworkHandler implements EntityTrackingLis
                 String contentToMinecraft = packet.chatMessage();
 
 
-                TutorialMod.LOGGER.info("playerName" + player.getName() + "  chat content : "+contentToMinecraft);
+                KookMod.LOGGER.info("playerName" + player.getName() + "  chat content : "+contentToMinecraft);
 
-                if (TutorialMod.config.to_Kook) {
-
+                if (KookServerMod.config.to_Kook) {
                     CompletableFuture.runAsync(() -> {
-                        KBCClient kbcClient = TutorialMod.getKbcClient();
-                        Channel channel = kbcClient.getCore().getHttpAPI().getChannel(TutorialMod.config.channel_ID);
+                        KBCClient kbcClient = KookServerMod.getKbcClient();
+                        Channel channel = kbcClient.getCore().getHttpAPI().getChannel(KookServerMod.config.channel_ID);
                         if (channel instanceof TextChannel) {
 
                             Map<String, String> map = MapUtil.builder(new HashMap<String, String>())
@@ -94,7 +94,7 @@ public abstract class MixinServerPlayNetworkHandler implements EntityTrackingLis
                                     .map();
 
                             TextChannel textChannel = (TextChannel) channel;
-                            textChannel.sendComponent(StrUtil.format(TutorialMod.config.to_Kook_Message, map));
+                            textChannel.sendComponent(StrUtil.format(KookServerMod.config.to_Kook_Message, map));
                         }
                     });
                 }

@@ -15,14 +15,8 @@
 	"icon": "assets/tutorial-mod/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
-			"net.flandre923.fabrickookchat.TutorialMod"
-		],
-		"client": [
-			"net.flandre923.fabrickookchat.TutorialModClient"
-		],
-		"fabric-datagen": [
-			"net.flandre923.fabrickookchat.TutorialModDataGenerator"
+		"server": [
+			"net.flandre923.fabrickookchat.KookServerMod"
 		]
 	},
 	"mixins": [

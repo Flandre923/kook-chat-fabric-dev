@@ -2,8 +2,9 @@ package net.flandre923.fabrickookchat.mixin;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import net.flandre923.fabrickookchat.KookMod;
+import net.flandre923.fabrickookchat.KookServerMod;
 import net.flandre923.fabrickookchat.util.PlayerIcon;
-import net.flandre923.fabrickookchat.TutorialMod;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
@@ -41,17 +42,17 @@ public class MixinPlayerManager {
 
     // 当玩家发送消息
     private void sendMessage(String content,String username){
-        TutorialMod.LOGGER.info("MixPlayerManager " + content + " :: " + username);
+        KookMod.LOGGER.info("MixPlayerManager " + content + " :: " + username);
     }
 
 
     @Inject(method = "onPlayerConnect", at = @At("RETURN"))
     private void onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci){
-        TutorialMod.LOGGER.info("join game name : " + player.getEntityName());
-        if(TutorialMod.config.join_Message){
+        KookMod.LOGGER.info("join game name : " + player.getEntityName());
+        if(KookServerMod.config.join_Message){
             CompletableFuture.runAsync(() -> {
-                KBCClient kbcClient = TutorialMod.getKbcClient();
-                Channel channel = kbcClient.getCore().getHttpAPI().getChannel(TutorialMod.config.channel_ID);
+                KBCClient kbcClient = KookServerMod.getKbcClient();
+                Channel channel = kbcClient.getCore().getHttpAPI().getChannel(KookServerMod.config.channel_ID);
                 if (channel instanceof TextChannel) {
                     TextChannel textChannel = (TextChannel) channel;
                     textChannel.sendComponent(buildCard(player.getEntityName(),player.getUuid().toString(),0));
@@ -70,7 +71,7 @@ public class MixinPlayerManager {
         if (type == 0) {
             return  new CardBuilder().setTheme(Theme.SUCCESS).setSize(Size.LG)
                     .addModule(new SectionModule(
-                            new MarkdownElement(StrUtil.format(TutorialMod.config.player_Join_Message, map)),
+                            new MarkdownElement(StrUtil.format(KookServerMod.config.player_Join_Message, map)),
                             new ImageElement(PlayerIcon.getPlayerIconUr(playerUUID), null, Size.SM, false),
                             Accessory.Mode.LEFT))
                     .build();
@@ -78,7 +79,7 @@ public class MixinPlayerManager {
         }else{
             return  new CardBuilder().setTheme(Theme.SUCCESS).setSize(Size.LG)
                     .addModule(new SectionModule(
-                            new MarkdownElement(StrUtil.format(TutorialMod.config.player_Quit_Message, map)),
+                            new MarkdownElement(StrUtil.format(KookServerMod.config.player_Quit_Message, map)),
                             new ImageElement(PlayerIcon.getPlayerIconUr(playerUUID), null, Size.SM, false),
                             Accessory.Mode.LEFT))
                     .build();
@@ -88,11 +89,11 @@ public class MixinPlayerManager {
 
     @Inject(method = "remove", at = @At("RETURN"))
     private void remove(ServerPlayerEntity player, CallbackInfo ci) {
-        TutorialMod.LOGGER.info("end game name : " + player.getEntityName());
-        if (TutorialMod.config.quit_Message) {
+        KookMod.LOGGER.info("end game name : " + player.getEntityName());
+        if (KookServerMod.config.quit_Message) {
             CompletableFuture.runAsync(() -> {
-                KBCClient kbcClient = TutorialMod.getKbcClient();
-                Channel channel = kbcClient.getCore().getHttpAPI().getChannel(TutorialMod.config.channel_ID);
+                KBCClient kbcClient = KookServerMod.getKbcClient();
+                Channel channel = kbcClient.getCore().getHttpAPI().getChannel(KookServerMod.config.channel_ID);
                 if (channel instanceof TextChannel) {
                     TextChannel textChannel = (TextChannel) channel;
                     textChannel.sendComponent(buildCard(player.getEntityName(), player.getUuid().toString(),1));

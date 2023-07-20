@@ -1,10 +1,9 @@
 package net.flandre923.fabrickookchat;
 
+import net.fabricmc.api.DedicatedServerModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.flandre923.fabrickookchat.commands.KookCommands;
 import net.flandre923.fabrickookchat.config.Config;
-import net.fabricmc.api.ModInitializer;
-
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.flandre923.fabrickookchat.config.ConfigFile;
 import net.flandre923.fabrickookchat.listener.KookListener;
 import org.slf4j.Logger;
@@ -21,7 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 // shift + f6 更改这个类的名字
-public class TutorialMod implements ModInitializer {
+public class KookServerMod implements DedicatedServerModInitializer {
 	public static final String MOD_ID = "fabrickookchat";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	private static final File kbcSetting = new File(".", "config/McToKook/kbc.yml");
@@ -37,7 +36,7 @@ public class TutorialMod implements ModInitializer {
 
 
 	@Override
-	public void onInitialize() {
+	public void onInitializeServer() {
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			/*
 			 * 读写本模组的配置文件
@@ -72,8 +71,8 @@ public class TutorialMod implements ModInitializer {
 			JKook.setCore(core);
 
 			//读取配置拿必要的东西
-			String bot_token = TutorialMod.config.bot_token;
-			String channel_ID = TutorialMod.config.channel_ID;
+			String bot_token = KookServerMod.config.bot_token;
+			String channel_ID = KookServerMod.config.channel_ID;
 
 			if (bot_token.equals("No token provided")) {
 				LOGGER.info("你没有提供bot-token或者bot-token不正确");
@@ -86,7 +85,7 @@ public class TutorialMod implements ModInitializer {
 					throw new Error("你没有提供channel ID或channel ID不正确,McToKook-Mod将会停用,服务端即将崩溃");
 				}
 			}
-			LOGGER.info("info token :" + TutorialMod.config.bot_token + " -- channel id" + TutorialMod.config.channel_ID);
+			LOGGER.info("info token :" + KookServerMod.config.bot_token + " -- channel id" + KookServerMod.config.channel_ID);
 			kbcClient = new KBCClient(core, config, new File(".","config/McToKook/"), bot_token);
 
 			kbcClient.start();
@@ -104,7 +103,7 @@ public class TutorialMod implements ModInitializer {
 	 *
 	 */
 	private static void saveKBCConfig() {
-		try (final InputStream stream = TutorialMod.class.getResourceAsStream("/kbc.yml")) {
+		try (final InputStream stream = KookServerMod.class.getResourceAsStream("/kbc.yml")) {
 			if (stream == null) {
 				throw new Error("Unable to find kbc.yml");
 			}
