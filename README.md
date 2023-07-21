@@ -31,7 +31,7 @@
 感谢[RealSeek](https://github.com/RealSeek)帮助本项目进行Gradle调优 \
 感谢[ZX夏夜之风](https://github.com/SNWCreations)开发的[KookBC](https://github.com/SNWCreations/KookBC) \
 感谢[RadBuilder](https://github.com/RadBuilder)的[Emoji Chat](https://github.com/RadBuilder/EmojiChat)项目 \
-感谢[Luna Le Tuna](https://www.youtube.com/channel/UCarUE396qwSVIJZGVdtUwNQ)制作的[twemoji-emojies](https://www.planetminecraft.com/texture-pack/emojis-in-chat/)材质包
+感谢[Luna Le Tuna](https://www.youtube.com/channel/UCarUE396qwSVIJZGVdtUwNQ)制作的[twemoji-emojies](https://www.planetminecraft.com/texture-pack/emojis-in-chat/)材质包 \
 感谢[xiaoACE6716](https://github.com/xiaoACE6716)制作的[McToKook-Mod](https://github.com/xiaoACE6716/McToKook-Mod)
 ## 最后
 还有什么问题、想法或建议，请直接与我联系，或者直接在github上开一个issues。
