@@ -1,6 +1,7 @@
 plugins {
 	id 'fabric-loom' version '1.3-SNAPSHOT'
 	id 'maven-publish'
+	id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 version = project.mod_version
@@ -15,23 +16,17 @@ repositories {
 	maven { url = 'https://jitpack.io' }
 	maven { url 'https://maven.fabricmc.net/' }
 	maven { url 'https://maven.architectury.dev/' }
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
 }
 
 loom {
-    runs {
-		// This adds a new gradle task that runs the datagen API: "gradlew runDatagen"
+	runs {
 		datagen {
 			inherit server
 			name "Data Generation"
 			vmArg "-Dfabric-api.datagen"
 			vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
 			vmArg "-Dfabric-api.datagen.modid=tutorial-mod"
- 
+
 			runDir "build/datagen"
 		}
 
@@ -47,7 +42,6 @@ loom {
 	}
 }
 
-// Add the generated resources to the main source set
 sourceSets {
 	main {
 		resources {
@@ -58,28 +52,20 @@ sourceSets {
 	}
 }
 
-configurations {
-	shade
-	implementation.extendsFrom shade
-}
+configurations { shadow; implementation.extendsFrom shadow }
 
 
 dependencies {
-	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	shade 'com.github.SNWCreations:Kookbc:bf237bad7c21940a2e8a8c5a95060f9bf49d0099'
-	shade 'cn.hutool:hutool-all:5.8.18'
-	
-	// Uncomment the following line to enable the deprecated Fabric API modules. 
-	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
-
-	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
+	shadow ('com.github.SNWCreations:Kookbc:0.27.2'){
+		exclude module: "sponge-mixin"
+		exclude module: "guava"
+	}
+	shadow 'cn.hutool:hutool-all:5.8.18'
 }
 
 processResources {
@@ -95,9 +81,6 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 
 	sourceCompatibility = JavaVersion.VERSION_17
@@ -108,12 +91,8 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_${project.base.archivesName.get()}"}
 	}
-
-	exclude 'META-INF/services/**'
-
 }
 
-// configure the maven publication
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
@@ -121,11 +100,18 @@ publishing {
 		}
 	}
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
 	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
 	}
+}
+
+shadowJar {
+	configurations = [project.configurations.shadow]
+	relocate('snw.kookbc', 'net.flander923.snw.kookbc')
+	relocate('com.google.gson','net.flander923.com.google.gson')
+	relocate('org.yaml.snakeyaml', 'net.flander923.org.yaml.snakeyaml')
+}
+
+remapJar {
+	dependsOn tasks.shadowJar
+	inputFile.set(tasks.shadowJar.archiveFile)
 }

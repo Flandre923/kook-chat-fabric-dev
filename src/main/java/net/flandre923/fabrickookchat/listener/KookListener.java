@@ -2,7 +2,6 @@ package net.flandre923.fabrickookchat.listener;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import net.flandre923.fabrickookchat.KookMod;
 import net.flandre923.fabrickookchat.KookServerMod;
 import net.flandre923.fabrickookchat.config.Config;
 import net.minecraft.server.MinecraftServer;

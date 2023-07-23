@@ -77,7 +77,7 @@ public class MixinPlayerManager {
                     .build();
 
         }else{
-            return  new CardBuilder().setTheme(Theme.SUCCESS).setSize(Size.LG)
+            return  new CardBuilder().setTheme(Theme.DANGER).setSize(Size.LG)
                     .addModule(new SectionModule(
                             new MarkdownElement(StrUtil.format(KookServerMod.config.player_Quit_Message, map)),
                             new ImageElement(PlayerIcon.getPlayerIconUr(playerUUID), null, Size.SM, false),
