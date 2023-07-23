@@ -12,7 +12,7 @@
 		"sources": "https://space.bilibili.com/4550069"
 	},
 	"license": "MIT",
-	"icon": "assets/tutorial-mod/icon.png",
+	"icon": "assets/tutorialmod/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"server": [
@@ -20,7 +20,7 @@
 		]
 	},
 	"mixins": [
-		"tutorial-mod.mixins.json"
+		"fabrickookchat.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.14.21",

@@ -3,7 +3,6 @@
 	"package": "net.flandre923.fabrickookchat.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"ExampleMixin",
 		"MixinPlayerManager",
 		"MixinServerPlayNetworkHandler"
 	],
