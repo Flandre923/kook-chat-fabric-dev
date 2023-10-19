@@ -5,15 +5,16 @@ import cn.hutool.core.util.StrUtil;
 import net.flandre923.fabrickookchat.KookMod;
 import net.flandre923.fabrickookchat.KookServerMod;
 import net.minecraft.SharedConstants;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.network.listener.ServerCommonPacketListener;
 import net.minecraft.network.listener.ServerPlayPacketListener;
+import net.minecraft.network.listener.TickablePacketListener;
 import net.minecraft.network.message.*;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.filter.FilteredMessage;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.EntityTrackingListener;
+import net.minecraft.server.network.*;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,25 +32,31 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Mixin(ServerPlayNetworkHandler.class)
-public abstract class MixinServerPlayNetworkHandler implements EntityTrackingListener, ServerPlayPacketListener {
+public abstract class MixinServerPlayNetworkHandler extends ServerCommonNetworkHandler implements ServerPlayPacketListener, PlayerAssociatedNetworkHandler, ServerCommonPacketListener, TickablePacketListener {
     @Shadow
     private ServerPlayerEntity player;
 
-    @Final
-    @Shadow
-    private MinecraftServer server;
+//    @Final
+//    @Shadow
+//    private MinecraftServer server;
 
     @Final
     @Shadow
     private MessageChainTaskQueue messageChainTaskQueue;
 
+    public MixinServerPlayNetworkHandler(MinecraftServer server, ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData) {
+        super(server, connection, clientData);
+
+    }
+
     @Shadow
     public abstract void checkForSpam();
 
-    @Shadow
-    public abstract void disconnect(Text reason);
+//    @Shadow
+//    public abstract void disconnect(Text reason);
 
     @Shadow
     public abstract CompletableFuture<FilteredMessage> filterText(String text);
