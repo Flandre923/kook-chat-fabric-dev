@@ -39,10 +39,6 @@ public abstract class MixinServerPlayNetworkHandler extends ServerCommonNetworkH
     @Shadow
     private ServerPlayerEntity player;
 
-//    @Final
-//    @Shadow
-//    private MinecraftServer server;
-
     @Final
     @Shadow
     private MessageChainTaskQueue messageChainTaskQueue;
@@ -55,14 +51,12 @@ public abstract class MixinServerPlayNetworkHandler extends ServerCommonNetworkH
     @Shadow
     public abstract void checkForSpam();
 
-//    @Shadow
-//    public abstract void disconnect(Text reason);
 
     @Shadow
     public abstract CompletableFuture<FilteredMessage> filterText(String text);
 
     @Shadow
-    public abstract Optional<LastSeenMessageList> validateMessage(String message, Instant timestamp, LastSeenMessageList.Acknowledgment acknowledgment);
+    public abstract Optional<LastSeenMessageList> validateMessage(LastSeenMessageList.Acknowledgment acknowledgment);
 
     @Shadow
     public abstract void handleCommandExecution(CommandExecutionC2SPacket packet, LastSeenMessageList lastSeenMessages);
@@ -81,7 +75,7 @@ public abstract class MixinServerPlayNetworkHandler extends ServerCommonNetworkH
         if(hasIllegalCharacter(packet.chatMessage())) {
             disconnect(Text.translatable("multiplayer.disconnect.illegal_characters"));
         }else{
-            Optional<LastSeenMessageList> optional = validateMessage(packet.chatMessage(), packet.timestamp(), packet.acknowledgment());
+            Optional<LastSeenMessageList> optional = this.validateMessage(packet.acknowledgment());
             if (optional.isPresent()) {
                 String contentToDiscord = packet.chatMessage();
                 String contentToMinecraft = packet.chatMessage();
@@ -96,7 +90,7 @@ public abstract class MixinServerPlayNetworkHandler extends ServerCommonNetworkH
                         if (channel instanceof TextChannel) {
 
                             Map<String, String> map = MapUtil.builder(new HashMap<String, String>())
-                                    .put("playerName", player.getEntityName())
+                                    .put("playerName", player.getGameProfile().getName())
                                     .put("message", contentToDiscord)
                                     .map();
 
@@ -108,7 +102,7 @@ public abstract class MixinServerPlayNetworkHandler extends ServerCommonNetworkH
 
                 try {
                     SignedMessage signedMessage = getSignedMessage(packet, optional.get());
-                    server.getPlayerManager().broadcast(signedMessage.withUnsignedContent(Objects.requireNonNull(Text.Serializer.fromJson("[{\"text\":\"" + contentToMinecraft + "\"}]"))), player, MessageType.params(MessageType.CHAT, player));
+                    server.getPlayerManager().broadcast(signedMessage.withUnsignedContent(Objects.requireNonNull(Text.Serialization.fromJson("[{\"text\":\"" + contentToMinecraft + "\"}]"))), player, MessageType.params(MessageType.CHAT, player));
                 } catch (MessageChain.MessageChainException e) {
                     handleMessageChainException(e);
                 }

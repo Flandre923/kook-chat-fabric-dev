@@ -49,14 +49,14 @@ public class MixinPlayerManager {
 
     @Inject(method = "onPlayerConnect", at = @At("RETURN"))
     private void onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData,CallbackInfo ci){
-        KookMod.LOGGER.info("join game name : " + player.getEntityName());
+        KookMod.LOGGER.info("join game name : " + player.getGameProfile().getName());
         if(KookServerMod.config.join_Message){
             CompletableFuture.runAsync(() -> {
                 KBCClient kbcClient = KookServerMod.getKbcClient();
                 Channel channel = kbcClient.getCore().getHttpAPI().getChannel(KookServerMod.config.channel_ID);
                 if (channel instanceof TextChannel) {
                     TextChannel textChannel = (TextChannel) channel;
-                    textChannel.sendComponent(buildCard(player.getEntityName(),player.getUuid().toString(),0));
+                    textChannel.sendComponent(buildCard(player.getGameProfile().getName(),player.getUuid().toString(),0));
                 }
             });
         }
@@ -90,14 +90,14 @@ public class MixinPlayerManager {
 
     @Inject(method = "remove", at = @At("RETURN"))
     private void remove(ServerPlayerEntity player, CallbackInfo ci) {
-        KookMod.LOGGER.info("end game name : " + player.getEntityName());
+        KookMod.LOGGER.info("end game name : " + player.getGameProfile().getName());
         if (KookServerMod.config.quit_Message) {
             CompletableFuture.runAsync(() -> {
                 KBCClient kbcClient = KookServerMod.getKbcClient();
                 Channel channel = kbcClient.getCore().getHttpAPI().getChannel(KookServerMod.config.channel_ID);
                 if (channel instanceof TextChannel) {
                     TextChannel textChannel = (TextChannel) channel;
-                    textChannel.sendComponent(buildCard(player.getEntityName(), player.getUuid().toString(),1));
+                    textChannel.sendComponent(buildCard(player.getGameProfile().getName(), player.getUuid().toString(),1));
                 }
             });
         }
