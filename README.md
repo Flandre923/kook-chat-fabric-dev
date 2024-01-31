@@ -1,7 +1,7 @@
 # Kook Chat Fabric
 
 这是一个可以让MC的聊天与指定的一个KOOK服务器频道互通的MC Fabric Mod \
-支持版本：目前已支持Minecraft 1.20.1 
+支持版本：目前已支持Minecraft 1.20.1, 1.20.2, 1.20.3, 1.20.4
 基于Fabric 与 JKook api 与 KookBC 
 
 ## Mod的食用方法
