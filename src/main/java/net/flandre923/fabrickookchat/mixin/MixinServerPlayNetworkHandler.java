@@ -54,7 +54,7 @@ public abstract class MixinServerPlayNetworkHandler extends ServerCommonNetworkH
     }
 
     @Shadow
-    public abstract Optional<LastSeenMessageList> validateMessage(LastSeenMessageList.Acknowledgment acknowledgment);
+    public abstract  Optional<LastSeenMessageList> validateAcknowledgment(LastSeenMessageList.Acknowledgment acknowledgment);
 
     @Shadow
     public abstract SignedMessage getSignedMessage(ChatMessageC2SPacket packet, LastSeenMessageList lastSeenMessages) throws MessageChain.MessageChainException;
@@ -69,11 +69,11 @@ public abstract class MixinServerPlayNetworkHandler extends ServerCommonNetworkH
      */
     @Inject(method = "onChatMessage", at = @At("HEAD"), cancellable = true)
     private void onChatMessage(ChatMessageC2SPacket packet, CallbackInfo ci) {
-        if (hasIllegalCharacter(packet.chatMessage())) {
-            disconnect(Text.translatable("multiplayer.disconnect.illegal_characters"));
-        } else {
+//        if (hasIllegalCharacter(packet.chatMessage())) {
+//            disconnect(Text.translatable("multiplayer.disconnect.illegal_characters"));
+//        } else {
             handleChatMessage(packet);
-        }
+//        }
         ci.cancel();
 
     }
@@ -84,7 +84,7 @@ public abstract class MixinServerPlayNetworkHandler extends ServerCommonNetworkH
      */
     @Unique
     private void handleChatMessage(ChatMessageC2SPacket packet) {
-        Optional<LastSeenMessageList> optional = this.validateMessage(packet.acknowledgment());
+        Optional<LastSeenMessageList> optional = this.validateAcknowledgment(packet.acknowledgment());
         if (optional.isPresent()) {
             sendMessageToKook(packet.chatMessage());
             broadcastMessageToMinecraft(packet, optional.get());
@@ -119,26 +119,26 @@ public abstract class MixinServerPlayNetworkHandler extends ServerCommonNetworkH
     private void broadcastMessageToMinecraft(ChatMessageC2SPacket packet, LastSeenMessageList lastSeenMessages) {
         try {
             SignedMessage signedMessage = getSignedMessage(packet, lastSeenMessages);
-            server.getPlayerManager().broadcast(signedMessage.withUnsignedContent(Objects.requireNonNull(Text.Serialization.fromJson("[{\"text\":\"" + packet.chatMessage() + "\"}]"))), player, MessageType.params(MessageType.CHAT, player));
+            server.getPlayerManager().broadcast(signedMessage.withUnsignedContent(Objects.requireNonNull(Text.Serialization.fromJson("[{\"text\":\"" + packet.chatMessage() + "\"}]",player.getWorld().getRegistryManager()))), player, MessageType.params(MessageType.CHAT, player));
         } catch (MessageChain.MessageChainException e) {
             handleMessageChainException(e);
         }
     }
 
-    /**
-     * 此方法用于检查玩家发送的聊天消息中是否含有非法字符。
-     * @param message String 类型，表示玩家发送的聊天消息。
-     * @return boolean 类型，如果消息中包含非法字符，则返回 true，否则返回 false。
-     */
-    @Unique
-    private boolean hasIllegalCharacter(String message) {
-        for (int i = 0; i < message.length(); ++i) {
-            if (!SharedConstants.isValidChar(message.charAt(i))) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    /**
+//     * 此方法用于检查玩家发送的聊天消息中是否含有非法字符。
+//     * @param message String 类型，表示玩家发送的聊天消息。
+//     * @return boolean 类型，如果消息中包含非法字符，则返回 true，否则返回 false。
+//     */
+//    @Unique
+//    private boolean hasIllegalCharacter(String message) {
+//        for (int i = 0; i < message.length(); ++i) {
+//            if (!SharedConstants.isValidChar(message.charAt(i))) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 }
 
 
